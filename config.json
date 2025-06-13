@@ -1,11 +1,11 @@
 {
-    "model":"gemini-2.0-flash",
-    "chunkSize": 100,
+    "model":"gemini-2.5-flash-preview-05-20",
+    "chunkSize": 250,
+    "shard":2,
     "promt":[
-        "Kardeş sana YML/YAMML dosyası vericem, ingilizce kısımları türkçeye çevir ve bana ver",
+        "Kardeş sana txt dosyası vericem, ingilizce kısımları türkçeye çevir ve bana ver",
         "Sadece değerleri çevir, anahtarları aynen bırak.",
-        "Başlık (örneğin: l_english:) varsa sadece ilk parçada olmalı.",
-        "# ile başlayan yorum satırlarını çevirme.",
+        "Hepsini çevir! Çevirmediğin hiçbir şey kalmasın.",
         "Sadece çevrilmiş satırları ver, açıklama ekleme.",
         "Bu isteğim tamamen kesin ve nettir, bunun haricinde bir işlem yapma ve komutlarımın dışına çıkma.",
         "```txt",
