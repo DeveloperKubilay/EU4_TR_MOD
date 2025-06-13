@@ -2,6 +2,8 @@ require('dotenv').config();
 
 const db = require('./modules/database.js');
 
+console.log(process.env)
+
 async function main(){
     try {
         const uploadResponse = await db.fileupload('test.txt', 'Hello, Cloudflare R2!');
