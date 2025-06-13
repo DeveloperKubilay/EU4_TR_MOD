@@ -27,7 +27,7 @@ class Eu4Loc {
             const match = splitFromFirstQuote(line)
             if (!match.name || !match.value) continue;
             this.data[match.name] = match.value
-            this.list.push(match.name)
+            this.list.push(`${match.name} "${match.value}"\n`)
         }
     }
 
@@ -43,7 +43,7 @@ class Eu4Loc {
     }
 
     toString() {
-        let result = 'l_turkish:'
+        let result = 'l_turkish:\n'
         for (const [key, value] of Object.entries(this.data)) {
             result += ` ${key} "${value}"\n`
         }
