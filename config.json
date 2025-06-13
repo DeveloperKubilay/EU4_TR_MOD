@@ -1,0 +1,19 @@
+{
+    "model":"gemini-2.0-flash",
+    "chunkSize": 100,
+    "promt":[
+        "Kardeş sana YML/YAMML dosyası vericem, ingilizce kısımları türkçeye çevir ve bana ver",
+        "Sadece değerleri çevir, anahtarları aynen bırak.",
+        "Başlık (örneğin: l_english:) varsa sadece ilk parçada olmalı.",
+        "# ile başlayan yorum satırlarını çevirme.",
+        "Sadece çevrilmiş satırları ver, açıklama ekleme.",
+        "Bu isteğim tamamen kesin ve nettir, bunun haricinde bir işlem yapma ve komutlarımın dışına çıkma.",
+        "```txt",
+        "{DATA}",
+        "```"
+    ]
+}
+
+
+
+
