@@ -25,4 +25,7 @@ jobs:
     - run: npm ci
     - run: node index.js
       env:
-        TEST: ${{ secrets.TEST }}
+        CLOUDFLARE_ACCESS_KEY_ID: ${{ secrets.CLOUDFLARE_ACCESS_KEY_ID }}
+        CLOUDFLARE_SECRET_ACCESS_KEY: ${{ secrets.CLOUDFLARE_SECRET_ACCESS_KEY }}
+        CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        AWS_BUCKET_NAME: ${{ secrets.AWS_BUCKET_NAME }}

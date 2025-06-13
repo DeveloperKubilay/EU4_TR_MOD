@@ -29,7 +29,8 @@ async function filedownload(fileName) {
         Bucket: bucketName,
         Key: fileName,
     };
-    return await s3.getObject(params).promise();
+    const response = await s3.getObject(params).promise();
+    return response.Body.toString('utf-8');
 }
 
 async function filedelete(fileName) {
@@ -39,11 +40,24 @@ async function filedelete(fileName) {
     };
     return await s3.deleteObject(params).promise();
 }
+async function GetLastFileNAME() {
+    const params = {
+        Bucket: bucketName,
+        MaxKeys: 1,
+    };
+    const response = await s3.listObjectsV2(params).promise();
+    if (response.Contents.length > 0) {
+        return response.Contents[0].Key;
+    } else {
+        throw new Error('No files found in the bucket');
+    }
+}
 
 
 
 module.exports = {
     fileupload,
     filedownload,
-    filedelete
+    filedelete,
+    GetLastFileNAME
 }
