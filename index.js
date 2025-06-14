@@ -6,11 +6,15 @@ const fs = require('fs');
 const db = require('./modules/database.js');
 
 async function main() {
-  var runs = [];
-  for (var i = 0; i < config.ParalelRun; i++) {
-    runs.push(doTranslate());
+  while (true) {
+    console.log("HELLO WORLD")
+    var runs = [];
+    for (var i = 0; i < config.ParalelRun; i++) {
+      runs.push(doTranslate());
+    }
+    await Promise.all(runs);
+    console.log("BYE WORLD")
   }
-  await Promise.all(runs);
 
 
 }
@@ -21,13 +25,17 @@ main().catch(err => {
 
 async function doTranslate() {
   const lastfile = await db.GetLastFileNAME();
+  console.log("Started file: " + lastfile);
   var text = await db.filedownload(lastfile);
-  await db.filedelete(lastfile);
   const Ydb = new yml(text)
   try {
     text = await chunkProcess(Ydb);
   } catch (e) {
-    console.log("index:30",e)
+    console.log("index:30", e)
   }
-  await db.fileupload("translated_"+lastfile, text);
+  console.log("Files uploading", lastfile);
+  await db.filedelete(lastfile);
+  await db.filedelete("translated_" + lastfile);
+  await db.fileupload("translated_" + lastfile, text);
+  console.log("Files uploaded",lastfile)
 }

@@ -57,11 +57,24 @@ async function GetLastFileNAME() {
     }
 }
 
+async function GiveAllFileNames() {
+    const params = {
+        Bucket: bucketName,
+    };
+    const response = await s3.listObjectsV2(params).promise();
+    if (response.Contents && response.Contents.length > 0) {
+        return response.Contents.map(file => file.Key);
+    } else {
+        throw new Error('Bucket\'ta hiç dosya bulunamadı');
+    }
+}
+
 
 
 module.exports = {
     fileupload,
     filedownload,
     filedelete,
-    GetLastFileNAME
+    GetLastFileNAME,
+    GiveAllFileNames
 }
