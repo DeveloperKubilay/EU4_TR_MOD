@@ -22,18 +22,28 @@ class Eu4Loc {
             textdata = textdata.replace("```txt", "").replace("```", "")
 
         this.list = []
+        this.data = {}
         for (let line of textdata.split('\n')) {
             line = line.trim()
             if (!line || line.startsWith('#')) continue;
 
             const match = splitFromFirstQuote(line)
             if (!match.name || !match.value) continue;
+            this.data[match.name] = match.value
             this.list.push(`${match.name} "${match.value}"\n`)
         }
     }
 
     getList() {
         return this.list
+    }
+    
+    has(data){
+        return this.data.hasOwnProperty(data)
+    }
+
+    getNames(){
+        return Object.keys(this.data)
     }
 }
 
