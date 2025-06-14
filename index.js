@@ -33,7 +33,13 @@ async function doTranslate(x) {
   await db.filedelete(lastfile);
   const Ydb = new yml(text)
   try {
-    text = await chunkProcess(Ydb);
+    text = await chunkProcess(Ydb)
+    .replace("ş","þ")
+    .replace("Ş","Þ")
+    .replace("ğ","ð")
+    .replace("Ğ","Ð")
+    .replace("ı","ý")
+    .replace("İ","Ý")
   } catch (e) {
     console.log("index:30", e)
   }
