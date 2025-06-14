@@ -30,6 +30,7 @@ async function doTranslate() {
   const lastfile = await db.GetLastFileNAME();
   console.log("Started file: " + lastfile);
   var text = await db.filedownload(lastfile);
+  await db.filedelete(lastfile);
   const Ydb = new yml(text)
   try {
     text = await chunkProcess(Ydb);
