@@ -22,7 +22,7 @@ jobs:
     - name: Install dependencies
       run: npm ci
     - name: Download tr package
-      run: cd qucikrun && node download_tr_version.js && cd ../modules && mv "Mod_template" "Eu4 Çeviri" 
+      run: cd quickrun && node download_tr_version.js && cd ../modules && mv "Mod_template" "Eu4 Çeviri" 
       env:
         build: 'true'
     - name: Upload
