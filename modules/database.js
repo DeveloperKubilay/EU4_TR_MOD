@@ -51,8 +51,7 @@ async function GetLastFileNAME() {
             throw new Error('Bucket\'ta uygun dosya bulunamadı');
         }
         const sortedFiles = filteredFiles.sort((a, b) => a.LastModified - b.LastModified);
-        await filedelete(sortedFiles[0].Key);
-        return sortedFiles[0].Key;;
+        return sortedFiles[0].Key;
     } else {
         throw new Error('Bucket\'ta hiç dosya bulunamadı');
     }
