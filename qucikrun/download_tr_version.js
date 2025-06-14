@@ -9,7 +9,7 @@ async function main() {
         const file = files[i].replace("english","turkish");
 
         fs.writeFileSync(`../tr/${file}`, 
-            await db.filedownload(file)
+            await db.filedownload("translated_"+file)
         );
 
     }

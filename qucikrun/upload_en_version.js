@@ -10,6 +10,7 @@ async function main() {
 
         try {
             await db.filedelete(file);//deltes files
+            await db.filedelete("translated_"+file);//deltes files
         } catch { }
         await db.fileupload(file, fs.readFileSync(`../en/${file}`, 'utf8'));// uploads files
         console.log(`File ${file} uploaded successfully. ${files.length - i - 1} files remaining.`);

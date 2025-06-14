@@ -43,13 +43,17 @@ async function filedelete(fileName) {
 async function GetLastFileNAME() {
     const params = {
         Bucket: bucketName,
-        MaxKeys: 1,
     };
     const response = await s3.listObjectsV2(params).promise();
-    if (response.Contents.length > 0) {
-        return response.Contents[0].Key;
+    if (response.Contents && response.Contents.length > 0) {
+        const filteredFiles = response.Contents.filter(file => !file.Key.includes('translated_'));
+        if (filteredFiles.length === 0) {
+            throw new Error('Bucket\'ta uygun dosya bulunamadı');
+        }
+        const sortedFiles = filteredFiles.sort((a, b) => a.LastModified - b.LastModified);
+        return sortedFiles[0].Key;
     } else {
-        throw new Error('No files found in the bucket');
+        throw new Error('Bucket\'ta hiç dosya bulunamadı');
     }
 }
 

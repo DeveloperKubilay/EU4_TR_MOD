@@ -29,5 +29,5 @@ async function doTranslate() {
   } catch (e) {
     console.log("index:30",e)
   }
-  await db.fileupload(lastfile, text);
+  await db.fileupload("translated_"+lastfile, text);
 }
