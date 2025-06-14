@@ -10,6 +10,7 @@ async function processText(chunk) {
 }
 
 module.exports = async function (text,checksystem = 1) {
+    try{
     var tempText = checksystem != 1 ? "\n" : "l_turkish:\n"
 
     const allItems = text.getList();
@@ -31,4 +32,8 @@ module.exports = async function (text,checksystem = 1) {
 
     if(checksystem != 1) return await check(tempText,text);
     else return tempText;
+    } catch (e) {
+        console.log(c.red("❌ Error in chunkProcess.js: ", e));
+        throw e;
+    }
 }

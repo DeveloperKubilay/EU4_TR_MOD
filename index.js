@@ -40,7 +40,7 @@ async function doTranslate(x) {
     .replace("ı","ý")
     .replace("İ","Ý")
   } catch (e) {
-    console.log(c.red("❌ ERR index:30", e))
+    console.log(c.red("❌ ERR index:43"),e)
   }
   console.log(c.blue(`⬆️ Files uploading: ${lastfile}`));
   await db.filedelete("translated_" + lastfile);
