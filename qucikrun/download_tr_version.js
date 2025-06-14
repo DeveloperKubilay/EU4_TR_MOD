@@ -2,23 +2,24 @@ require('dotenv').config({ path: '../.env' });
 
 const db = require('../modules/database.js');
 const fs = require('fs');
+const c = require('ansi-colors');
 
 async function main() {
     if (!fs.existsSync("../tr")) {
         fs.mkdirSync("../tr", { recursive: true });
-        console.log("📁 TR klasörü oluşturuldu!");
+        console.log(c.green("📁 TR klasörü oluşturuldu!"));
     }
 
     const names = await db.GiveAllFileNames();
     console.log(names)
-    console.log(`📂 Toplam ${names.length} dosya bulundu!`);
-    console.log("📋 Dosya listesi alındı!");
+    console.log(c.cyan(`📂 Toplam ${c.bold(names.length)} dosya bulundu!`));
+    console.log(c.blue("📋 Dosya listesi alındı!"));
 
     let indirilenDosyaSayisi = 0;
     let hatalıDosyaSayisi = 0;
 
     const translatedFiles = names.filter(name => name.startsWith("translated_"));
-    console.log(`🔍 Toplam ${translatedFiles.length} adet çevirisi hazır dosya bulundu!`);
+    console.log(c.magenta(`🔍 Toplam ${c.bold(translatedFiles.length)} adet çevirisi hazır dosya bulundu!`));
 
     for (let i = 0; i < translatedFiles.length; i++) {
         const translatedFile = translatedFiles[i];
@@ -31,18 +32,18 @@ async function main() {
             if (content) {
                 fs.writeFileSync(`../tr/${turkishFile}`, content);
                 indirilenDosyaSayisi++;
-                console.log(`✅ İndirildi: ${turkishFile}`);
+                console.log(c.green(`✅ İndirildi: ${turkishFile}`));
             } else {
-                console.log(`⚠️ İçerik boş: ${translatedFile}`);
+                console.log(c.yellow(`⚠️ İçerik boş: ${translatedFile}`));
                 hatalıDosyaSayisi++;
             }
         } catch (error) {
-            console.error(`❌ Hata: ${translatedFile}`);
+            console.error(c.red(`❌ Hata: ${translatedFile}`));
             hatalıDosyaSayisi++;
         }
     }
     
-    console.log(`\n📊 Sonuç: ${indirilenDosyaSayisi} dosya indirildi, ${hatalıDosyaSayisi} dosya indirilemedi.`);
+    console.log(c.bold(`\n📊 Sonuç: ${c.green(indirilenDosyaSayisi)} dosya indirildi, ${c.red(hatalıDosyaSayisi)} dosya indirilemedi.`));
 }
 
-main().catch(err => console.error(`🔴 Hata: ${err}`));
+main().catch(err => console.error(c.bgRed.white(`🔴 Hata: ${err}`)));

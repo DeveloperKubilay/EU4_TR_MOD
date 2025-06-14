@@ -2,6 +2,7 @@ const yml = require("./loc.js")
 const ai = require('./ai.js');
 const check = require('./check.js');
 const config = require('../config.json');
+const c = require('ansi-colors');
 
 async function processText(chunk) {
     const text = new yml(await ai(config.promt.join("\n").replace("{DATA}", chunk)), true);
@@ -21,7 +22,7 @@ module.exports = async function (text,checksystem = 1) {
     }
 
     for (const chunk of chunks) {
-        console.log(chunk.length, "items in chunk");
+        console.log(c.cyan(`📦 ${chunk.length} items in chunk`));
         const [...data] = await Promise.all(chunk)
         data.forEach(data => {
             tempText += data

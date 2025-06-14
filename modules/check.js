@@ -1,9 +1,10 @@
 const yml = require("./loc.js")
 const chunkProcess = require('./chunkProcess.js');
 const config = require('../config.json');
+const c = require('ansi-colors');
 
 module.exports = async function (newtext, oldtext) {
-    console.log("Checking text for errors...");
+    console.log(c.cyan("🔎 Checking text for errors..."));
     if(oldtext == false) return;
     const newdb = new yml(newtext)
     const olddb = new yml(oldtext)
@@ -13,7 +14,7 @@ module.exports = async function (newtext, oldtext) {
         notfounddatas.push(name)
     }
     if(notfounddatas.length) {
-        console.log("WE GOT ERR")
+        console.log(c.yellow("⚠️ WE GOT ERR"))
         const newdata = await chunkProcess(newtext, config.FixChunk)
         newtext = newtext + newdata
         const newdb2 = new yml(newtext)
@@ -24,7 +25,7 @@ module.exports = async function (newtext, oldtext) {
             errFound = true;
         }
         if (errFound) {
-            console.error("Error: Some data not found in new text after processing:", notfounddatas);
+            console.error(c.bgRed.white("❌ Error: Some data not found in new text after processing:"), c.red(notfounddatas));
             return false;
         }
     }
