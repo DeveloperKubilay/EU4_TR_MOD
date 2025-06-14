@@ -13,7 +13,7 @@ async function main() {
     console.log("HELLO WORLD")
     var runs = [];
     for (var i = 1; i < config.ParalelRun; i++) {
-      runs.push(delay(i * 5000).then(() => doTranslate()));
+      runs.push(delay(i * 5000).then(() => doTranslate(i)));
     }
     await Promise.all(runs);
     console.log("BYE WORLD")
@@ -26,9 +26,9 @@ main().catch(err => {
   process.exit(1);
 });
 
-async function doTranslate() {
+async function doTranslate(x) {
   const lastfile = await db.GetLastFileNAME();
-  console.log("Started file: " + lastfile);
+  console.log(x,"Started file: " + lastfile);
   var text = await db.filedownload(lastfile);
   await db.filedelete(lastfile);
   const Ydb = new yml(text)
