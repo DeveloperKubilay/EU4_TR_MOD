@@ -2,6 +2,7 @@ require('dotenv').config({ path: '../.env' });
 
 const db = require('../modules/database.js');
 const fs = require('fs');
+const c = require('ansi-colors');
 
 async function main() {
     const files = fs.readdirSync("../en");
@@ -13,7 +14,7 @@ async function main() {
             await db.filedelete("translated_"+file);//deltes files
         } catch { }
         await db.fileupload(file, fs.readFileSync(`../en/${file}`, 'utf8'));// uploads files
-        console.log(`File ${file} uploaded successfully. ${files.length - i - 1} files remaining.`);
+        console.log(c.green(`🚀 File ${c.bold(file)} uploaded successfully. ${c.cyan(files.length - i - 1)} files remaining.`));
 
     }
 }
