@@ -7,7 +7,6 @@ const c = require('ansi-colors');
 
 const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
-
 async function main() {
   while (true) {
     console.log(c.bold.green("🚀 HELLO WORLD"));
