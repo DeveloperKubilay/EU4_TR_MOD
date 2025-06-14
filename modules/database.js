@@ -69,6 +69,25 @@ async function GiveAllFileNames() {
     }
 }
 
+async function deleteAllFiles() {
+    const params = {
+        Bucket: bucketName,
+    };
+    const response = await s3.listObjectsV2(params).promise();
+    if (response.Contents && response.Contents.length > 0) {
+        const deleteParams = {
+            Bucket: bucketName,
+            Delete: {
+                Objects: response.Contents.map(file => ({ Key: file.Key })),
+            },
+        };
+        return await s3.deleteObjects(deleteParams).promise();
+    } else {
+        throw new Error('Bucket\'ta hiç dosya bulunamadı');
+    }
+    
+}
+
 
 
 module.exports = {
@@ -76,5 +95,6 @@ module.exports = {
     filedownload,
     filedelete,
     GetLastFileNAME,
-    GiveAllFileNames
+    GiveAllFileNames,
+    deleteAllFiles
 }

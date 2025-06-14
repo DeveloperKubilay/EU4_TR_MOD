@@ -10,6 +10,8 @@ async function main() {
     }
 
     const names = await db.GiveAllFileNames();
+    console.log(names)
+    console.log(`📂 Toplam ${names.length} dosya bulundu!`);
     console.log("📋 Dosya listesi alındı!");
 
     let indirilenDosyaSayisi = 0;
