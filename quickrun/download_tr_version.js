@@ -9,7 +9,7 @@ async function main() {
         fs.mkdirSync("../tr", { recursive: true });
         console.log(c.green("📁 TR klasörü oluşturuldu!"));
     }
-    
+
     const names = await db.GiveAllFileNames();
     console.log(names)
     console.log(c.cyan(`📂 Toplam ${c.bold(names.length)} dosya bulundu!`));
@@ -22,6 +22,7 @@ async function main() {
     console.log(c.magenta(`🔍 Toplam ${c.bold(translatedFiles.length)} adet çevirisi hazır dosya bulundu!`));
 
     const mainpath = process.env.build ? "../modules/Mod_template/locations/" : "../tr/"
+    fs.mkdirSync("../modules/Mod_template/locations/", { recursive: true });
 
     for (let i = 0; i < translatedFiles.length; i++) {
         const translatedFile = translatedFiles[i];
