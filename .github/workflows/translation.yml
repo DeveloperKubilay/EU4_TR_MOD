@@ -27,7 +27,8 @@ jobs:
         CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
         AWS_BUCKET_NAME: ${{ secrets.AWS_BUCKET_NAME }}
         Gemini_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-        
+        Gemini_API_KEY_2: ${{ secrets.GEMINI_API_KEY_2 }}
+
   # build-2:
 
   #   runs-on: ubuntu-latest

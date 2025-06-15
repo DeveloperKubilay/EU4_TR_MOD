@@ -5,7 +5,11 @@ const config = require('../config.json');
 const c = require('ansi-colors');
 
 async function processText(chunk) {
-    const text = new yml(await ai(config.promt.join("\n").replace("{DATA}", chunk)), true);
+    var temptext = "";
+    try{
+        temptext = await ai(config.promt.join("\n").replace("{DATA}", chunk))
+    }catch{}
+    const text = new yml(temptext, true);
     return " " + text.getList().join(" ")
 }
 
