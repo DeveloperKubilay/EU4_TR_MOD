@@ -33,18 +33,23 @@ async function doTranslate(x) {
   const lastfile = await db.GetLastFileNAME();
   console.log(c.cyan(`🔄 [${x}] Started file: ${c.bold(lastfile)}`));
   var text = await db.filedownload(lastfile);
+  const originalText = text;
   await db.filedelete(lastfile);
-  const Ydb = new yml(text)
   try {
-    text = (await chunkProcess(Ydb))
-    .replace("ş","þ")
-    .replace("Ş","Þ")
-    .replace("ğ","ð")
-    .replace("Ğ","Ð")
-    .replace("ı","ý")
-    .replace("İ","Ý")
+    text = await chunkProcess(text);
+    text = text
+      .replace(/ş/g,"þ")
+      .replace(/Ş/g,"Þ")
+      .replace(/ğ/g,"ð")
+      .replace(/Ğ/g,"Ð")
+      .replace(/ı/g,"ý")
+      .replace(/İ/g,"Ý");
+    if (text === originalText) {
+      throw new Error("Çeviri işlemi başarısız oldu - metin değişmedi");
+    }
   } catch (e) {
-    console.log(c.red("❌ ERR index:43"),e)
+    console.log(c.red(`❌ ERR index.js - ${lastfile} için çeviri başarısız oldu`), e);
+    throw e;
   }
   console.log(c.blue(`⬆️ Files uploading: ${lastfile}`));
   await db.filedelete("translated_" + lastfile);
