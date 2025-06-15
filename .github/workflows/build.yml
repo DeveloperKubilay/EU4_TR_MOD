@@ -22,7 +22,7 @@ jobs:
     - name: Install dependencies
       run: npm ci
     - name: Download tr package
-      run: cd quickrun && node download_tr_version.js && cd ../modules && mv "Mod_template" "Eu4 Çeviri" 
+      run: cd quickrun && node download_tr_version.js
       env:
         build: 'true'
         CLOUDFLARE_ACCESS_KEY_ID: ${{ secrets.CLOUDFLARE_ACCESS_KEY_ID }}
@@ -32,6 +32,6 @@ jobs:
     - name: Upload
       uses: actions/upload-artifact@v4
       with:
-        name: Mod
+        name: Eu4 Çeviri
         path: |
-          ./modules/Eu4 Çeviri
+          ./modules/Mod_template
