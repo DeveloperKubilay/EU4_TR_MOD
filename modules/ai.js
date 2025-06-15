@@ -1,5 +1,6 @@
 const { GoogleGenAI } = require('@google/genai');
 const ai = new GoogleGenAI({ apiKey: process.env.Gemini_API_KEY });
+const FixeerAi = new GoogleGenAI({ apiKey: process.env.Gemini_API_KEY_2 });
 const config = require('../config.json')
 const c = require('ansi-colors');
 
@@ -58,7 +59,7 @@ async function generateText(data, resolve, reject) {
       };
 
       if(igoterr) Asyncsleep();
-      const response = await ai.models.generateContent({
+      const response = await (igoterr ? FixeerAi : ai).models.generateContent({
         model: config.model,
         contents: [{
           text: data
