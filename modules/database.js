@@ -13,6 +13,8 @@ const s3 = new AWS.S3({
     signatureVersion: 'v4',
 });
 
+// İşlemeyi bekleyen dosyaları takip etmek için basit bir cache
+const processingFiles = new Set();
 
 async function fileupload(fileName, fileContent) {
     const params = {
@@ -38,20 +40,34 @@ async function filedelete(fileName) {
         Bucket: bucketName,
         Key: fileName,
     };
+    // Dosya işlendiğinde processingFiles'dan da kaldıralım
+    processingFiles.delete(fileName);
     return await s3.deleteObject(params).promise();
 }
+
 async function GetLastFileNAME() {
     const params = {
         Bucket: bucketName,
     };
     const response = await s3.listObjectsV2(params).promise();
     if (response.Contents && response.Contents.length > 0) {
-        const filteredFiles = response.Contents.filter(file => !file.Key.includes('translated_'));
+        // Henüz işlenmemiş ve işlenmekte olmayan dosyaları filtreleyelim
+        const filteredFiles = response.Contents.filter(file => 
+            !file.Key.includes('translated_') && !processingFiles.has(file.Key)
+        );
+        
         if (filteredFiles.length === 0) {
-            throw new Error('Bucket\'ta uygun dosya bulunamadı');
+            throw new Error('Bucket\'ta uygun dosya bulunamadı veya tüm dosyalar işleniyor');
         }
+        
+        // En eski dosyayı döndürelim
         const sortedFiles = filteredFiles.sort((a, b) => a.LastModified - b.LastModified);
-        return sortedFiles[0].Key;
+        const selectedFile = sortedFiles[0].Key;
+        
+        // Bu dosyayı işleme dizisine ekleyelim
+        processingFiles.add(selectedFile);
+        
+        return selectedFile;
     } else {
         throw new Error('Bucket\'ta hiç dosya bulunamadı');
     }
@@ -81,14 +97,13 @@ async function deleteAllFiles() {
                 Objects: response.Contents.map(file => ({ Key: file.Key })),
             },
         };
+        // Set'i temizleyelim
+        processingFiles.clear();
         return await s3.deleteObjects(deleteParams).promise();
     } else {
         throw new Error('Bucket\'ta hiç dosya bulunamadı');
     }
-    
 }
-
-
 
 module.exports = {
     fileupload,
