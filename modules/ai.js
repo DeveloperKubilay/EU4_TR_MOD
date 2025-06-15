@@ -20,7 +20,7 @@ setInterval(() => {
     const { data, resolve, reject } = awaits.shift();
     generateText(data, resolve, reject);
   }else 
-  console.log(c.yellow("⚠️ 🤖 Bazı yapay zeka hataları nedeniyle bekleyen işlemler var, lütfen bekleyin... ⏳"));
+  console.log(c.yellow("⚠️ Bazı yapay zeka hataları nedeniyle bekleyen işlemler var!"));
 }, config.AI_INT)
 
 const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
