@@ -7,13 +7,39 @@ const c = require('ansi-colors');
 
 const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
+// Worker'lar arasında senkronizasyon için basit bir kilit mekanizması
+const activeWorkers = {
+  count: 0,
+  maxActive: config.shard // Aynı anda aktif çalışabilecek maksimum worker sayısı
+};
+
 async function worker(workerId) {
   while (true) {
     try {
+      // Worker'lar arası koordinasyon kontrolü
+      while (activeWorkers.count >= activeWorkers.maxActive) {
+        console.log(c.yellow(`⏸️ [${workerId}] Diğer worker'ları bekliyor...`));
+        await delay(2000); // 2 saniye bekle ve tekrar kontrol et
+      }
+      
+      // Worker aktif olarak işaretleniyor
+      activeWorkers.count++;
+      console.log(c.blue(`🟢 [${workerId}] Çalışmaya başladı - Aktif: ${activeWorkers.count}/${activeWorkers.maxActive}`));
+      
       await doTranslate(workerId);
-      // Çok hızlı arka arkaya sorguları önlemek için kısa bir bekleme
-      await delay(500);
+      
+      // Worker işini tamamladı
+      activeWorkers.count--;
+      console.log(c.blue(`🔵 [${workerId}] Çalışmayı tamamladı - Aktif: ${activeWorkers.count}/${activeWorkers.maxActive}`));
+      
+      // Sonraki döngüye geçmeden önce biraz daha uzun bir bekleme
+      await delay(2000);
     } catch (err) {
+      // Hata durumunda worker sayacını azalt (hata durumunda da worker inaktif sayılmalı)
+      if (activeWorkers.count > 0) {
+        activeWorkers.count--;
+      }
+      
       // Dosya bulunamazsa veya tüm dosyalar işleniyorsa biraz bekleyelim
       console.log(c.yellow(`⏸️ [${workerId}] İşlenecek dosya bulunamadı veya hata oluştu, bekleniyor...`));
       await delay(5000); // 5 saniye bekle ve tekrar dene
@@ -26,8 +52,17 @@ async function main() {
   const paralel = Math.max(1, config.ParalelRun);
   const workers = [];
   
+  // Worker sayısının shard sayısından fazla olmaması için kontrol
+  if (paralel > config.shard) {
+    console.log(c.yellow(`⚠️ Paralel çalışan sayısı (${paralel}), shard sayısından (${config.shard}) fazla. Optimizasyon için shard sayısı kadar çalışan kullanılıyor.`));
+  }
+  
   for (let i = 1; i <= paralel; i++) {
-    workers.push(worker(i));
+    // Worker'ları kademeli olarak başlat
+    setTimeout(() => {
+      workers.push(worker(i));
+      console.log(c.green(`🚀 Worker ${i} başlatıldı`));
+    }, i * 3000); // Her worker'ı 3 saniye arayla başlat
   }
   
   await Promise.all(workers);
