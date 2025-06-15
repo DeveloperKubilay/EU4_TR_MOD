@@ -25,6 +25,10 @@ jobs:
       run: cd quickrun && node download_tr_version.js && cd ../modules && mv "Mod_template" "Eu4 Çeviri" 
       env:
         build: 'true'
+        CLOUDFLARE_ACCESS_KEY_ID: ${{ secrets.CLOUDFLARE_ACCESS_KEY_ID }}
+        CLOUDFLARE_SECRET_ACCESS_KEY: ${{ secrets.CLOUDFLARE_SECRET_ACCESS_KEY }}
+        CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        AWS_BUCKET_NAME: ${{ secrets.AWS_BUCKET_NAME }}
     - name: Upload
       uses: actions/upload-artifact@v4
       with:
