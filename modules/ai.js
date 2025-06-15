@@ -6,7 +6,7 @@ const config = require('../config.json')
 const c = require('ansi-colors');
 
 const MAX_RETRIES = 10;
-const RETRY_DELAY = 5000;
+const RETRY_DELAY = 2500;
 const awaits = [];
 var wegoterr = false;
 var errscount = {};
@@ -20,7 +20,7 @@ setInterval(() => {
     const { data, resolve, reject } = awaits.shift();
     generateText(data, resolve, reject);
   }else 
-  console.log(c.yellow("⚠️ Bazı yapay zeka hataları nedeniyle bekleyen işlemler var!"));
+  if(wegoterr) console.log(c.yellow("⚠️ Bazı yapay zeka hataları nedeniyle bekleyen işlemler var!"));
 }, config.AI_INT)
 
 const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
@@ -74,7 +74,8 @@ async function generateText(data, resolve, reject) {
         generationConfig,
         responseMimeType: 'text/plain'
       });
-      console.log(c.green(`✅ AI içeriği başarıyla oluşturuldu! ${(Date.now()-starttime)/1000}s ${Math.floor(response.text.length/1024)} KB`));
+      const size = Math.floor(response.text.length/1024)
+      console.log(c.green(`✅ AI içeriği başarıyla oluşturuldu! ${(Date.now()-starttime)/1000}s ${size} KB`));
       resolve(response.text.replace(/[()]/g, ''));
     } catch (err) {
       errscount[starttime] = true;
