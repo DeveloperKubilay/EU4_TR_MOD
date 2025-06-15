@@ -7,13 +7,53 @@ const c = require('ansi-colors');
 
 const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
+// Rate limit hatası için takip sistemi
+const rateLimitTracker = {
+  isRateLimited: false,
+  cooldownTime: 0,
+  setCooldown: function(minutes = 5) {
+    this.isRateLimited = true;
+    this.cooldownTime = Date.now() + (minutes * 60 * 1000);
+    console.log(c.yellow(`⚠️ Rate limit durumu tespit edildi, ${minutes} dakika bekleniyor...`));
+  },
+  checkCooldown: function() {
+    if (!this.isRateLimited) return false;
+    
+    if (Date.now() > this.cooldownTime) {
+      this.isRateLimited = false;
+      console.log(c.green("✅ Rate limit bekleme süresi tamamlandı, işlemler devam edebilir."));
+      return false;
+    }
+    
+    const remainingSecs = Math.ceil((this.cooldownTime - Date.now()) / 1000);
+    return remainingSecs;
+  }
+};
+
 async function worker(workerId) {
   while (true) {
     try {
+      // Rate limit kontrolü
+      const cooldown = rateLimitTracker.checkCooldown();
+      if (cooldown) {
+        console.log(c.yellow(`⏸️ [${workerId}] Rate limit bekleniyor, kalan süre: ${cooldown} saniye`));
+        await delay(30000); // 30 saniye bekle ve tekrar kontrol et
+        continue;
+      }
+      
       await doTranslate(workerId);
       // Çok hızlı arka arkaya sorguları önlemek için kısa bir bekleme
       await delay(500);
     } catch (err) {
+      // Rate limit hatası mı kontrol et
+      if (err?.message?.includes('429') || 
+          err?.message?.includes('Too Many Requests') || 
+          err?.message?.includes('RESOURCE_EXHAUSTED')) {
+        rateLimitTracker.setCooldown(5); // 5 dakika bekleme
+        await delay(5000);
+        continue;
+      }
+      
       // Dosya bulunamazsa veya tüm dosyalar işleniyorsa biraz bekleyelim
       console.log(c.yellow(`⏸️ [${workerId}] İşlenecek dosya bulunamadı veya hata oluştu, bekleniyor...`));
       await delay(5000); // 5 saniye bekle ve tekrar dene
