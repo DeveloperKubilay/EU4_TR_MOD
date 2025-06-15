@@ -9,7 +9,7 @@ async function main() {
         fs.mkdirSync("../tr", { recursive: true });
         console.log(c.green("📁 TR klasörü oluşturuldu!"));
     }
-
+    
     const names = await db.GiveAllFileNames();
     console.log(names)
     console.log(c.cyan(`📂 Toplam ${c.bold(names.length)} dosya bulundu!`));
