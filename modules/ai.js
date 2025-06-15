@@ -16,11 +16,11 @@ setInterval(() => {
 },1000)
 
 setInterval(() => {
-  console.log("debug",!wegoterr,!wegoterr && awaits.length > 0)
   if (!wegoterr && awaits.length > 0) {
     const { data, resolve, reject } = awaits.shift();
     generateText(data, resolve, reject);
-  }
+  }else 
+  console.log(c.yellow("⚠️ 🤖 Bazı yapay zeka hataları nedeniyle bekleyen işlemler var, lütfen bekleyin... ⏳"));
 }, config.AI_INT)
 
 const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
@@ -33,7 +33,6 @@ module.exports = async function (data) {
 
 var lastai = true;
 function giveAi(){
-  console.log(!lastai)
   lastai = !lastai;
   if (lastai) return ai;
   return Alternative_ai;
