@@ -3,7 +3,8 @@
     "chunkSize": 300,
     "shard":2,
     "FixChunk":4,
-    "ParalelRun":2,
+    "ParalelRun":5,
+    "AI_INT":500,
     "promt":[
         "Kardeş sana txt dosyası vericem, ingilizce kısımları türkçeye çevir ve bana ver",
         "Sadece değerleri çevir, anahtarları aynen bırak.",
