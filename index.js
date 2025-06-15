@@ -61,7 +61,8 @@ async function doTranslate(workerId) {
     }
   } catch (e) {
     console.log(c.red(`❌ ERR index.js - ${lastfile} için çeviri başarısız oldu`), e);
-    await db.filedelete(lastfile); // Dosyayı silip işlenme durumunu temizleyelim ki başka worker deneyebilsin
+    await db.fileupload("ERR_" + lastfile, originalText); // Orijinal metni yükleyelim
+    await db.filedelete(lastfile); 
     throw e;
   }
   
