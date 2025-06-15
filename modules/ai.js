@@ -6,7 +6,7 @@ const config = require('../config.json')
 const c = require('ansi-colors');
 
 const MAX_RETRIES = 10;
-const RETRY_DELAY = 2500;
+const RETRY_DELAY = config.AI_RETRY_DELAY || 5000; // 5 saniye varsayılan
 const awaits = [];
 var wegoterr = false;
 var errscount = {};
