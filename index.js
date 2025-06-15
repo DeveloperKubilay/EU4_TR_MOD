@@ -7,19 +7,23 @@ const c = require('ansi-colors');
 
 const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
-async function main() {
+async function worker(x) {
   while (true) {
-    console.log(c.bold.green("🚀 HELLO WORLD"));
-    var runs = [];
-    for (var i = 1; i < config.ParalelRun; i++) {
-      runs.push(delay(i * 5000).then(() => doTranslate(i)));
-    }
-    await Promise.all(runs);
-    console.log(c.bold.yellow("👋 BYE WORLD"));
+    await delay(x * 5000);
+    await doTranslate(x);
   }
-
-
 }
+
+async function main() {
+  console.log(c.bold.green("🚀 HELLO WORLD"));
+  const paralel = Math.max(1, config.ParalelRun - 1);
+  const workers = [];
+  for (let i = 1; i <= paralel; i++) {
+    workers.push(worker(i));
+  }
+  await Promise.all(workers);
+}
+
 main().catch(err => {
   console.error(c.red('❌ Error:', err));
   process.exit(1);
