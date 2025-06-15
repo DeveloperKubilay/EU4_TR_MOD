@@ -21,7 +21,7 @@ async function main() {
     const translatedFiles = names.filter(name => name.startsWith("translated_"));
     console.log(c.magenta(`🔍 Toplam ${c.bold(translatedFiles.length)} adet çevirisi hazır dosya bulundu!`));
 
-    const mainpath = process.env.build ? "../modules/Mod_template/" : "../tr/"
+    const mainpath = process.env.build ? "../modules/Mod_template/locations/" : "../tr/"
 
     for (let i = 0; i < translatedFiles.length; i++) {
         const translatedFile = translatedFiles[i];
