@@ -9,6 +9,7 @@ const awaits = [];
 var wegoterr = false;
 
 setInterval(() => {
+  console.log("debug",!wegoterr,!wegoterr && awaits.length > 0)
   if (!wegoterr && awaits.length > 0) {
     const { data, resolve, reject } = awaits.shift();
     generateText(data, resolve, reject);
@@ -28,6 +29,17 @@ module.exports = async function (data) {
 async function generateText(data, resolve, reject) {
   let retries = 0;
   let igoterr = false;
+
+  async function Asyncsleep(){
+    igoterr = false;
+    await sleep(RETRY_DELAY);
+    if(igoterr) console.log(c.yellow("⏳ Ai hala hatayı çözemedi, bekleniyor..."));
+    else {
+      console.log(c.green("✅ AI hatası çözüldü, işlem devam ediyor..."));
+      wegoterr = false;
+    }
+  }
+
   while (retries < MAX_RETRIES) {
     try {
       console.log(c.green(`🔍 AI ile içerik oluşturuluyor... ${awaits.length} kadar bekleyen var`));
@@ -35,6 +47,7 @@ async function generateText(data, resolve, reject) {
         maxOutputTokens: 8192
       };
 
+      if(igoterr) Asyncsleep();
       const response = await ai.models.generateContent({
         model: config.model,
         contents: [{
@@ -43,10 +56,6 @@ async function generateText(data, resolve, reject) {
         generationConfig,
         responseMimeType: 'text/plain'
       });
-      if(igoterr) {
-        console.log(c.green("✅ AI hatası çözüldü, işlem devam ediyor..."));
-        wegoterr = false;
-      }
       console.log(c.green(`✅ AI içeriği başarıyla oluşturuldu! ${Math.floor(response.text.length/1024)} KB`));
       resolve(response.text.replace(/[()]/g, ''));
     } catch (err) {
