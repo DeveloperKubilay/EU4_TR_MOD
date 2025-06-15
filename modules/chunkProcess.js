@@ -5,13 +5,8 @@ const config = require('../config.json');
 const c = require('ansi-colors');
 
 async function processText(chunk) {
-    try {
-        const text = new yml(await ai(config.promt.join("\n").replace("{DATA}", chunk)), true);
-        return " " + text.getList().join(" ");
-    } catch (error) {
-        console.error(c.red("❌ Process text hatası:", error));
-        throw error; // Hatayı yukarı ilet
-    }
+    const text = new yml(await ai(config.promt.join("\n").replace("{DATA}", chunk)), true);
+    return " " + text.getList().join(" ")
 }
 
 module.exports = async function (text, checksystem = 1) {
@@ -33,16 +28,10 @@ module.exports = async function (text, checksystem = 1) {
 
         for (const chunk of chunks) {
             console.log(c.cyan(`📦 ${chunk.length} items in chunk`));
-            try {
-                const [...data] = await Promise.all(chunk)
-                data.forEach(data => {
-                    tempText += data
-                })
-            } catch (error) {
-                // Eğer bir chunk işlenirken hata olursa, hata fırlatıyoruz
-                console.error(c.red("❌ Chunk işlenirken hata:", error));
-                throw error;
-            }
+            const [...data] = await Promise.all(chunk)
+            data.forEach(data => {
+                tempText += data
+            })
         }
 
         if(checksystem != 1) return await check(tempText, text);
