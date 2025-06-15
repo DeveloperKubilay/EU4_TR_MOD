@@ -59,7 +59,7 @@ async function generateText(data, resolve, reject) {
       };
 
       if(igoterr) Asyncsleep();
-      const response = await (igoterr ? FixeerAi : ai).models.generateContent({
+      const response = await (wegoterr ? FixeerAi : ai).models.generateContent({
         model: config.model,
         contents: [{
           text: data
