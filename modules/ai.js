@@ -1,5 +1,6 @@
 const { GoogleGenAI } = require('@google/genai');
 const ai = new GoogleGenAI({ apiKey: process.env.Gemini_API_KEY });
+const Alternative_ai = new GoogleGenAI({ apiKey: process.env.Gemini_API_KEY_3 });
 const FixeerAi = new GoogleGenAI({ apiKey: process.env.Gemini_API_KEY_2 });
 const config = require('../config.json')
 const c = require('ansi-colors');
@@ -30,6 +31,13 @@ module.exports = async function (data) {
   });
 }
 
+var lastai = true;
+function giveAi(){
+  console.log(!lastai)
+  lastai = !lastai;
+  if (lastai) return ai;
+  return Alternative_ai;
+}
 
 
 async function generateText(data, resolve, reject) {
@@ -44,9 +52,9 @@ async function generateText(data, resolve, reject) {
     else {
       delete errscount[starttime]
       console.log(
-         c.green("✅ AI hatası çözüldü, işlem devam ediyor... ama hala şu kadar hatada bekleyen var: ",
+         c.green("✅ AI hatası çözüldü, işlem devam ediyor... ama hala şu kadar hatada bekleyen var: "),
          Object.keys(errscount).length
-        ));
+        );
       wegoterr = false;
     }
   }
@@ -59,7 +67,7 @@ async function generateText(data, resolve, reject) {
       };
 
       if(igoterr) Asyncsleep();
-      const response = await (wegoterr ? FixeerAi : ai).models.generateContent({
+      const response = await (wegoterr ? FixeerAi : giveAi()).models.generateContent({
         model: config.model,
         contents: [{
           text: data
