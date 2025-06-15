@@ -7,6 +7,11 @@ const MAX_RETRIES = 10;
 const RETRY_DELAY = 5000;
 const awaits = [];
 var wegoterr = false;
+var errscount = {};
+var datenw = Date.now();
+setInterval(() => {
+  datenw = Date.now();
+},1000)
 
 setInterval(() => {
   console.log("debug",!wegoterr,!wegoterr && awaits.length > 0)
@@ -29,13 +34,18 @@ module.exports = async function (data) {
 async function generateText(data, resolve, reject) {
   let retries = 0;
   let igoterr = false;
+  const starttime = datenw
 
   async function Asyncsleep(){
     igoterr = false;
     await sleep(RETRY_DELAY);
     if(igoterr) console.log(c.yellow("⏳ Ai hala hatayı çözemedi, bekleniyor..."));
     else {
-      console.log(c.green("✅ AI hatası çözüldü, işlem devam ediyor..."));
+      delete errscount[starttime]
+      console.log(
+         c.green("✅ AI hatası çözüldü, işlem devam ediyor... ama hala şu kadar hatada bekleyen var: ",
+         Object.keys(errscount).length
+        ));
       wegoterr = false;
     }
   }
@@ -56,9 +66,10 @@ async function generateText(data, resolve, reject) {
         generationConfig,
         responseMimeType: 'text/plain'
       });
-      console.log(c.green(`✅ AI içeriği başarıyla oluşturuldu! ${Math.floor(response.text.length/1024)} KB`));
+      console.log(c.green(`✅ AI içeriği başarıyla oluşturuldu! ${(Date.now()-starttime)/1000}s ${Math.floor(response.text.length/1024)} KB`));
       resolve(response.text.replace(/[()]/g, ''));
     } catch (err) {
+      errscount[starttime] = true;
       retries++;
       wegoterr = true;
       igoterr = true;

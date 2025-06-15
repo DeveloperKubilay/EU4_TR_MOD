@@ -7,6 +7,10 @@ const c = require('ansi-colors');
 
 const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
+console.log(process.env)
+process.exit(0)
+
+
 async function worker(workerId) {
   while (true) {
     try {
