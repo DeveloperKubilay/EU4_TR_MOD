@@ -43,8 +43,11 @@ async function generateText(data, resolve, reject) {
         generationConfig,
         responseMimeType: 'text/plain'
       });
-      if(igoterr) wegoterr = false;
-      console.log(c.green(`✅ AI içeriği başarıyla oluşturuldu! ${response.text.length} karakter`));
+      if(igoterr) {
+        console.log(c.green("✅ AI hatası çözüldü, işlem devam ediyor..."));
+        wegoterr = false;
+      }
+      console.log(c.green(`✅ AI içeriği başarıyla oluşturuldu! ${Math.floor(response.text.length/1024)} KB`));
       resolve(response.text.replace(/[()]/g, ''));
     } catch (err) {
       retries++;
