@@ -5,12 +5,10 @@ const fs = require('fs');
 const c = require('ansi-colors');
 
 async function main() {
-    // Önce veritabanındaki tüm dosya isimlerini al
     console.log(c.blue("📋 Veritabanındaki dosya listesi alınıyor..."));
     const dbDosyalar = await db.GiveAllFileNames();
     console.log(c.blue(`✅ Veritabanında ${c.bold(dbDosyalar.length)} dosya bulundu.`));
     
-    // EN dosyalarını listele
     const files = fs.readdirSync("../en");
     let silinenDosya = 0;
     let bulunmayanDosya = 0;
@@ -23,9 +21,8 @@ async function main() {
         const translatedFile = "translated_" + file;
         
         try {
-            // translated_ ile başlayan dosyanın veritabanında var olup olmadığını kontrol et
-            if (dbDosyalar.includes(translatedFile)) {
-                await db.filedelete(translatedFile); // dosyayı sil
+             if (dbDosyalar.includes(translatedFile)) {
+                await db.filedelete(translatedFile);
                 silinenDosya++;
                 console.log(c.green(`🗑️ Dosya ${c.bold(translatedFile)} silindi. ${c.cyan(files.length - i - 1)} dosya kaldı.`));
             } else {
