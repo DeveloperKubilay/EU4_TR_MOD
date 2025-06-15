@@ -40,7 +40,7 @@ async function main() {
                 hatalıDosyaSayisi++;
             }
         } catch (error) {
-            console.error(c.red(`❌ Hata: ${translatedFile}`));
+            console.error(c.red(`❌ Hata: ${translatedFile}`),error);
             hatalıDosyaSayisi++;
         }
     }
