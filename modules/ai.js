@@ -6,9 +6,10 @@ const c = require('ansi-colors');
 const MAX_RETRIES = 10;
 const RETRY_DELAY = 5000;
 const awaits = [];
+var wegoterr = false;
 
 setInterval(() => {
-  if (awaits.length > 0) {
+  if (!wegoterr && awaits.length > 0) {
     const { data, resolve, reject } = awaits.shift();
     generateText(data, resolve, reject);
   }
@@ -23,11 +24,13 @@ module.exports = async function (data) {
 }
 
 
+
 async function generateText(data, resolve, reject) {
   let retries = 0;
+  let igoterr = false;
   while (retries < MAX_RETRIES) {
     try {
-      console.log(c.green("🔍 AI ile içerik oluşturuluyor..."));
+      console.log(c.green(`🔍 AI ile içerik oluşturuluyor... ${awaits.length} kadar bekleyen var`));
       const generationConfig = {
         maxOutputTokens: 8192
       };
@@ -40,9 +43,13 @@ async function generateText(data, resolve, reject) {
         generationConfig,
         responseMimeType: 'text/plain'
       });
+      if(igoterr) wegoterr = false;
+      console.log(c.green(`✅ AI içeriği başarıyla oluşturuldu! ${response.text.length} karakter`));
       resolve(response.text.replace(/[()]/g, ''));
     } catch (err) {
       retries++;
+      wegoterr = true;
+      igoterr = true;
       console.error(c.red(`🚫 AI Hatası (Deneme ${retries}/${MAX_RETRIES}):`, err));
 
       if (retries >= MAX_RETRIES) {
