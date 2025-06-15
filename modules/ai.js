@@ -51,7 +51,7 @@ async function generateText(data, resolve, reject) {
     else {
       delete errscount[starttime]
       console.log(
-         c.green("✅ AI hatası çözüldü, işlem devam ediyor... ama hala şu kadar hatada bekleyen var: "),
+         c.greenBright("✨ AI hatası çözüldü, işlem devam ediyor! 💯 Hala şu kadar hatada bekleyen var: "),
          Object.keys(errscount).length
         );
       wegoterr = false;
