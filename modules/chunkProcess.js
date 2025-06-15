@@ -26,9 +26,6 @@ module.exports = async function (text, checksystem = 1) {
             } else chunks[chunks.length - 1].push(processText(chunk));
         }
 
-        console.log(chunks)
-        console.log(chunks.length)
-
         for (const chunk of chunks) {
             console.log(c.cyan(`📦 ${chunk.length} items in chunk`));
             const [...data] = await Promise.all(chunk)
