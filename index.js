@@ -2,19 +2,22 @@ require('dotenv').config();
 const chunkProcess = require('./modules/chunkProcess.js');
 const yml = require('./modules/loc.js');
 const config = require('./config.json');
-const db = require('./modules/database.js'); // database_fixed.js modülünü kullanıyoruz
+const db = require('./modules/database.js');
 const c = require('ansi-colors');
 
 const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
-
+var workerTry = 0;
 async function worker(workerId) {
   while (true) {
     try {
       await doTranslate(workerId);
-      // Çok hızlı arka arkaya sorguları önlemek için kısa bir bekleme
       await delay(500);
     } catch (err) {
-      // Dosya bulunamazsa veya tüm dosyalar işleniyorsa biraz bekleyelim
+      workerTry++;
+      if (workerTry > 5) {
+        console.error(c.red(`❌ [${workerId}] Çeviri işlemi başarısız oldu, ${workerTry} kez denendi. Çıkılıyor...`));
+        process.exit(1);
+      }
       console.log(c.yellow(`⏸️ [${workerId}] İşlenecek dosya bulunamadı veya hata oluştu, bekleniyor...`));
       await delay(5000); // 5 saniye bekle ve tekrar dene
     }
@@ -39,7 +42,6 @@ main().catch(err => {
 });
 
 async function doTranslate(workerId) {
-  // Her worker'ın farklı bir dosya almasını sağladık
   const lastfile = await db.GetLastFileNAME();
   console.log(c.cyan(`🔄 [${workerId}] Started file: ${c.bold(lastfile)}`));
   
