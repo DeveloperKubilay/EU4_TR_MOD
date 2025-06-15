@@ -1,6 +1,6 @@
 const { GoogleGenAI } = require('@google/genai');
 const ai = new GoogleGenAI({ apiKey: process.env.Gemini_API_KEY });
-const model = require('../config.json').model
+const config = require('../config.json')
 const c = require('ansi-colors');
 
 const MAX_RETRIES = 10;
@@ -33,7 +33,7 @@ async function generateText(data, resolve, reject) {
         };
 
         const response = await ai.models.generateContent({
-          model: model,
+          model: config.model,
           contents: [{
             text: data
           }],
