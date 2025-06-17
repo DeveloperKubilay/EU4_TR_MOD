@@ -15,6 +15,12 @@ async function main() {
     console.log(c.cyan(`📂 Toplam ${c.bold(names.length)} dosya bulundu!`));
     console.log(c.blue("📋 Dosya listesi alındı!"));
 
+    // ERR ile başlayan dosyaları kontrol et
+    const errorFiles = names.filter(name => name.startsWith("ERR_"));
+    if (errorFiles.length > 0) {
+        console.log(c.yellow(`⚠️ ${c.bold(errorFiles.length)} adet hatalı dosya var ama devam ediliyor...`));
+    }
+
     let indirilenDosyaSayisi = 0;
     let hatalıDosyaSayisi = 0;
 
@@ -47,6 +53,9 @@ async function main() {
     }
     
     console.log(c.bold(`\n📊 Sonuç: ${c.green(indirilenDosyaSayisi)} dosya indirildi, ${c.red(hatalıDosyaSayisi)} dosya indirilemedi.`));
+    if (errorFiles.length > 0) {
+        console.log(c.yellow(`⚠️ Ayrıca sistemde ${c.bold(errorFiles.length)} adet ERR_ ile başlayan hatalı dosya mevcut.`));
+    }
 }
 
 main().catch(err => console.error(c.bgRed.white(`🔴 Hata: ${err}`)));
