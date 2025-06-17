@@ -5,7 +5,6 @@
     "FixChunk":4,
     "ParalelRun":20,
     "AI_INT":10000,
-    "AI_RETRY_DELAY":5000,
     "promt":[
         "Kardeş sana txt dosyası vericem, ingilizce kısımları türkçeye çevir ve bana ver",
         "Sadece değerleri çevir, anahtarları aynen bırak.",
