@@ -34,7 +34,7 @@ async function worker(workerId) {
       workerTry++;
       if (workerTry > 3) {
         whilerunning = false;
-        console.error(c.red(`❌ [${workerId}] Çeviri işlemi başarısız oldu veya Çevirilicek dosya kalmadı. Çıkılıyor...`));
+        console.error(c.red(`❌ [${workerId}] Çevirilicek dosya kalmadı. Çıkılıyor...`));
       }
       await delay(5000); 
     }
