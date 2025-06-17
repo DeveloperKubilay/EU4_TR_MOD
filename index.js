@@ -24,7 +24,8 @@ async function updateRemainingFilesCount() {
 
 async function worker(workerId) {
   await updateRemainingFilesCount();
-  while (true) {
+  let whilerunning = true;
+  while (whilerunning) {
     try {
       await doTranslate(workerId);
       await updateRemainingFilesCount();
@@ -32,6 +33,7 @@ async function worker(workerId) {
     } catch (err) {
       workerTry++;
       if (workerTry > 3) {
+        whilerunning = false;
         console.error(c.red(`❌ [${workerId}] Çeviri işlemi başarısız oldu veya Çevirilicek dosya kalmadı. Çıkılıyor...`));
       }
       await delay(5000); 
