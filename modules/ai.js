@@ -5,10 +5,9 @@ const FixeerAi = new GoogleGenAI({ apiKey: process.env.Gemini_API_KEY_2 });
 const config = require('../config.json')
 const c = require('ansi-colors');
 
-const MAX_RETRIES = 10;
-const RETRY_DELAY = config.AI_RETRY_DELAY || 5000; // 5 saniye varsayılan
+const MAX_RETRIES = 15;
+const RETRY_DELAY = config.AI_RETRY_DELAY
 const awaits = [];
-var wegoterr = false;
 var errscount = {};
 var datenw = Date.now();
 setInterval(() => {
@@ -16,11 +15,12 @@ setInterval(() => {
 },1000)
 
 setInterval(() => {
-  if (!wegoterr && awaits.length > 0) {
+  if (Object.keys(errscount).length === 0 && awaits.length > 0) {
     const { data, resolve, reject } = awaits.shift();
     generateText(data, resolve, reject);
-  }else 
-  if(wegoterr) console.log(c.yellow("⚠️ Bazı yapay zeka hataları nedeniyle bekleyen işlemler var!"));
+  } else if (Object.keys(errscount).length > 0) {
+    console.log(c.yellow("⚠️ Bazı yapay zeka hataları nedeniyle bekleyen işlemler var!"));
+  }
 }, config.AI_INT)
 
 const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
@@ -54,7 +54,6 @@ async function generateText(data, resolve, reject) {
          c.greenBright("✨ AI hatası çözüldü, işlem devam ediyor! 💯 Hala şu kadar hatada bekleyen var: "),
          Object.keys(errscount).length
         );
-      wegoterr = false;
     }
   }
 
@@ -66,7 +65,7 @@ async function generateText(data, resolve, reject) {
       };
 
       if(igoterr) Asyncsleep();
-      const response = await (wegoterr ? FixeerAi : giveAi()).models.generateContent({
+      const response = await (Object.keys(errscount).length > 0 ? FixeerAi : giveAi()).models.generateContent({
         model: config.model,
         contents: [{
           text: data
@@ -80,7 +79,6 @@ async function generateText(data, resolve, reject) {
     } catch (err) {
       errscount[starttime] = true;
       retries++;
-      wegoterr = true;
       igoterr = true;
       console.error(c.red(`🚫 AI Hatası (Deneme ${retries}/${MAX_RETRIES}):`, err));
 
