@@ -54,6 +54,8 @@ async function main() {
   }
   
   await Promise.all(workers);
+  console.log(c.bold.green("🎉 Tüm dosyalar çevrildi! Program kapatılıyor..."));
+  process.exit(0);
 }
 
 main().catch(err => {
