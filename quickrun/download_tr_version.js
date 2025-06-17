@@ -29,8 +29,8 @@ async function main() {
     const translatedFiles = names.filter(name => name.startsWith("translated_"));
     console.log(c.magenta(`🔍 Toplam ${c.bold(translatedFiles.length)} adet çevirisi hazır dosya bulundu!`));
 
-    const mainpath = process.env.build ? "../modules/Mod_template/locations/" : "../tr/"
-    fs.mkdirSync("../modules/Mod_template/locations/", { recursive: true });
+    const mainpath = process.env.build ? "../modules/Mod_template/localisation/" : "../tr/"
+    fs.mkdirSync("../modules/Mod_template/localisation/", { recursive: true });
 
     for (let i = 0; i < translatedFiles.length; i++) {
         const translatedFile = translatedFiles[i];
