@@ -18,7 +18,7 @@ setInterval(() => {
     for (const key in errscount) {
       const { data, resolve, reject, starttime } = errscount[key];
       delete errscount[key];
-      generateText(FixeerAi, starttime, data, resolve, reject);
+      generateText(FixeerAi, starttime, data, resolve, reject,1);
     }
   }
   else if (Object.keys(errscount).length === 0 && awaits.length > 0) {
@@ -41,15 +41,14 @@ function giveAi() {
 }
 
 
-async function generateText(starttime, data, resolve, reject) {
+async function generateText(starttime, data, resolve, reject,xv) {
   try {
-    console.log(c.green(`🔍 ${Object.keys(errscount).length > 0 ? "Hatayı düzeltiliyor" : "AI ile içerik oluşturuluyor"} ... ${awaits.length} kadar bekleyen var`));
+    console.log(c.green(`🔍 ${xv ? "Hatayı düzeltiliyor" : "AI ile içerik oluşturuluyor"} ... ${awaits.length} kadar bekleyen var`));
     const generationConfig = {
       maxOutputTokens: 8192
     };
 
-    if (igoterr) Asyncsleep();
-    const response = await (Object.keys(errscount).length > 0 ? FixeerAi : giveAi()).models.generateContent({
+    const response = await (xv ? FixeerAi : giveAi()).models.generateContent({
       model: config.model,
       contents: [{
         text: data
@@ -61,6 +60,10 @@ async function generateText(starttime, data, resolve, reject) {
     console.log(c.green(`✅ AI içeriği başarıyla oluşturuldu! ${(Date.now() - starttime) / 1000}s ${size} KB`));
     resolve(response.text.replace(/[()]/g, ''));
   } catch (err) {
+    if(xv) 
+      reject(err);
+    else 
+      console.error(c.red(`❌ AI içeriği oluşturulamadı!`));
     errscount[starttime] = {
       data, resolve, reject, starttime
     };
