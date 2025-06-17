@@ -1,16 +1,33 @@
 require('dotenv').config();
 const chunkProcess = require('./modules/chunkProcess.js');
-const yml = require('./modules/loc.js');
 const config = require('./config.json');
 const db = require('./modules/database.js');
 const c = require('ansi-colors');
 
 const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 var workerTry = 0;
+let remainingFilesCount = 0; 
+
+async function updateRemainingFilesCount() {
+  try {
+    const allFiles = await db.GiveAllFileNames();
+    const pendingFiles = allFiles.filter(file => 
+      !file.startsWith('translated_') && !file.startsWith('ERR_')
+    );
+    remainingFilesCount = pendingFiles.length;
+    return remainingFilesCount;
+  } catch (err) {
+    console.error(c.red('❌ Kalan dosya sayısı hesaplanamadı:'), err);
+    return -1;
+  }
+}
+
 async function worker(workerId) {
+  await updateRemainingFilesCount();
   while (true) {
     try {
       await doTranslate(workerId);
+      await updateRemainingFilesCount();
       await delay(500);
     } catch (err) {
       workerTry++;
@@ -19,13 +36,16 @@ async function worker(workerId) {
         process.exit(1);
       }
       console.log(c.yellow(`⏸️ [${workerId}] İşlenecek dosya bulunamadı veya hata oluştu, bekleniyor...`));
-      await delay(5000); // 5 saniye bekle ve tekrar dene
+      await delay(5000); 
     }
   }
 }
 
 async function main() {
   console.log(c.bold.green("🚀 HELLO WORLD"));
+  await updateRemainingFilesCount();
+  console.log(c.magenta(`📊 Toplam ${c.bold(remainingFilesCount)} dosya çevrilmeyi bekliyor...`));
+  
   const paralel = Math.max(1, config.ParalelRun);
   const workers = [];
   
@@ -43,7 +63,7 @@ main().catch(err => {
 
 async function doTranslate(workerId) {
   const lastfile = await db.GetLastFileNAME();
-  console.log(c.cyan(`🔄 [${workerId}] Started file: ${c.bold(lastfile)}`));
+  console.log(c.cyan(`🔄 [${workerId}] Started file: ${c.bold(lastfile)} (Kalan: ${c.bold(remainingFilesCount)} dosya)`));
   
   var text = await db.filedownload(lastfile);
   const originalText = text;
@@ -63,7 +83,7 @@ async function doTranslate(workerId) {
     }
   } catch (e) {
     console.log(c.red(`❌ ERR index.js - ${lastfile} için çeviri başarısız oldu`), e);
-    await db.fileupload("ERR_" + lastfile, originalText); // Orijinal metni yükleyelim
+    await db.fileupload("ERR_" + lastfile, originalText);
     await db.filedelete(lastfile); 
     throw e;
   }
