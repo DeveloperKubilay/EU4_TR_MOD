@@ -18,11 +18,19 @@ function splitFromFirstQuote(str) {
 
 class Eu4Loc {
     constructor(textdata, itsai) {
-        if (itsai)
+        if (itsai && typeof textdata === 'string') {
             textdata = textdata.replace("```txt", "").replace("```", "")
+        }
 
         this.list = []
         this.data = {}
+        
+        // textdata string değilse veya boşsa, işleme devam etmeden kontrol yap
+        if (!textdata || typeof textdata !== 'string') {
+            console.error("❌ HATA: textdata string değil veya boş:", typeof textdata);
+            return;
+        }
+        
         for (let line of textdata.split('\n')) {
             line = line.trim()
             if (!line || line.startsWith('#')) continue;
