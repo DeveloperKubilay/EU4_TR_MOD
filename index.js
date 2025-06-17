@@ -88,7 +88,7 @@ async function doTranslate(workerId) {
     throw e;
   }
   
-  console.log(c.blue(`⬆️ [${workerId}] Files uploading: ${lastfile}`));
+  console.log(c.blue(`⬆️ [${workerId}] Files uploading: ${lastfile} (Kalan: ${c.bold(remainingFilesCount-1)} dosya)`));
   await db.filedelete(lastfile);
   await db.fileupload("translated_" + lastfile, text);
   console.log(c.green(`✅ [${workerId}] Files uploaded: ${lastfile}`));

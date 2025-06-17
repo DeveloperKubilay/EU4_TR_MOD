@@ -1,7 +1,7 @@
 {
     "model":"gemini-2.5-flash-preview-05-20",
     "chunkSize": 300,
-    "shard":3,
+    "shard":5,
     "FixChunk":4,
     "ParalelRun":20,
     "AI_INT":5000,
