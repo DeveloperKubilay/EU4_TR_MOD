@@ -41,9 +41,10 @@ function giveAi() {
 }
 
 
-async function generateText(starttime, data, resolve, reject,xv) {
+async function generateText(starttime, data, resolve, reject, xv) {
   try {
-    console.log(c.green(`🔍 ${xv ? "Hatayı düzeltiliyor" : "AI ile içerik oluşturuluyor"} ... ${awaits.length} kadar bekleyen var`));
+    console.log(c.green(`🔍 ${xv ? "Hatayı düzeltiliyor" : "AI ile içerik oluşturuluyor"} ...`+
+    `${xv ? Object.keys(errscount).length : awaits.length} kadar bekleyen var`));
     const generationConfig = {
       maxOutputTokens: 8192
     };
@@ -60,12 +61,18 @@ async function generateText(starttime, data, resolve, reject,xv) {
     console.log(c.green(`✅ AI içeriği başarıyla oluşturuldu! ${(Date.now() - starttime) / 1000}s ${size} KB`));
     resolve(response.text.replace(/[()]/g, ''));
   } catch (err) {
-    if(xv) 
-      reject(err);
-    else 
-      console.error(c.red(`❌ AI içeriği oluşturulamadı!`));
-    errscount[starttime] = {
-      data, resolve, reject, starttime
-    };
+    console.error(c.red(`❌ AI içeriği oluşturulamadı!`));
+    if(!xv) {
+      errscount[starttime] = {
+        data, resolve, reject, starttime
+      };
+    } else {
+      // Hata düzeltme işlevinde (FixeerAi) bir hata oluşursa
+      if(typeof reject === 'function') {
+        reject(err);
+      } else {
+        console.error(c.red(`⛔ Hata işleme fonksiyonu çalıştırılamadı!`));
+      }
+    }
   }
 }

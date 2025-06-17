@@ -8,6 +8,12 @@ const c = require('ansi-colors');
 const translationCache = new Map();
 
 async function processText(chunk) {
+    // Chunk kontrolü
+    if (!chunk || typeof chunk !== 'string') {
+        console.log(c.red(`❌ Geçersiz chunk verisi: ${typeof chunk}`));
+        return " ";
+    }
+    
     // Aynı chunk'ı birden çok kez çevirmemek için önbellek kontrolü
     const cacheKey = chunk.trim();
     
@@ -19,14 +25,33 @@ async function processText(chunk) {
     var temptext = "";
     try {
         console.log("🤖 İşleniyor...")
+        
+        // Prompt kontrolü
+        if (!config.promt || !Array.isArray(config.promt)) {
+            console.log(c.red(`❌ Geçersiz config.promt: ${typeof config.promt}`));
+            return " ";
+        }
+        
         temptext = await ai(config.promt.join("\n").replace("{DATA}", chunk))
         
-        const result = " " + new yml(temptext, true).getList().join(" ");
+        if (!temptext || typeof temptext !== 'string') {
+            console.log(c.red(`❌ AI yanıtı geçersiz: ${typeof temptext}`));
+            return " ";
+        }
         
-        // Sonucu önbelleğe kaydedelim
-        translationCache.set(cacheKey, result);
-        
-        return result;
+        try {
+            const ymlObj = new yml(temptext, true);
+            const list = ymlObj.getList();
+            const result = " " + (Array.isArray(list) ? list.join(" ") : "");
+            
+            // Sonucu önbelleğe kaydedelim
+            translationCache.set(cacheKey, result);
+            
+            return result;
+        } catch (ymlError) {
+            console.log(c.red(`❌ YML işleme hatası: ${ymlError.message}`));
+            return " ";
+        }
     } catch (error) {
         console.log(c.red(`❌ AI işlemi hatası: ${error.message}`));
         return " "; // Hata durumunda boş değer döndür
