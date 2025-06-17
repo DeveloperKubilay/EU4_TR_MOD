@@ -63,11 +63,41 @@ async function generateText(starttime, data, resolve, reject, xv) {
   } catch (err) {
     console.error(c.red(`❌ AI içeriği oluşturulamadı!`));
     if(!xv) {
-      errscount[starttime] = {
-        data, resolve, reject, starttime
-      };
+      const dataLength = data.length;
+      if (dataLength > config.FixChunk) {
+        console.log(c.yellow(`⚠️ İçerik çok büyük! ${config.FixChunk} parçaya bölünüyor...`));
+        const chunkSize = Math.ceil(dataLength / config.FixChunk);
+        const chunks = [];
+        
+        for (let i = 0; i < config.FixChunk; i++) {
+          const start = i * chunkSize;
+          const end = Math.min(start + chunkSize, dataLength);
+          chunks.push(data.substring(start, end));
+        }
+        
+        Promise.all(chunks.map(chunk => {
+          return new Promise((chunkResolve) => {
+            errscount[Date.now()] = {
+              data: chunk,
+              resolve: chunkResolve,
+              reject,
+              starttime: Date.now()
+            };
+          });
+        }))
+        .then(results => {
+          const combinedResult = results.join('');
+          resolve(combinedResult);
+        })
+        .catch(error => {
+          reject(error);
+        });
+      } else {
+        errscount[starttime] = {
+          data, resolve, reject, starttime
+        };
+      }
     } else {
-      // Hata düzeltme işlevinde (FixeerAi) bir hata oluşursa
       if(typeof reject === 'function') {
         reject(err);
       } else {
