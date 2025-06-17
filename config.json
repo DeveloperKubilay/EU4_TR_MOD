@@ -4,7 +4,7 @@
     "shard":3,
     "FixChunk":4,
     "ParalelRun":20,
-    "AI_INT":7000,
+    "AI_INT":5000,
     "promt":[
         "Kardeş sana txt dosyası vericem, ingilizce kısımları türkçeye çevir ve bana ver",
         "Sadece değerleri çevir, anahtarları aynen bırak.",
