@@ -18,7 +18,9 @@ async function main() {
     // ERR ile başlayan dosyaları kontrol et
     const errorFiles = names.filter(name => name.startsWith("ERR_"));
     if (errorFiles.length > 0) {
-        console.log(c.yellow(`⚠️ ${c.bold(errorFiles.length)} adet hatalı dosya var ama devam ediliyor...`));
+        for (let i = 0; i < 10; i++) {
+            console.log(c.yellow(`⚠️ ${c.bold(errorFiles.length)} adet hatalı dosya var ama devam ediliyor...`));
+        }
     }
 
     let indirilenDosyaSayisi = 0;

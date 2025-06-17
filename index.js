@@ -31,11 +31,9 @@ async function worker(workerId) {
       await delay(500);
     } catch (err) {
       workerTry++;
-      if (workerTry > 5) {
-        console.error(c.red(`❌ [${workerId}] Çeviri işlemi başarısız oldu, ${workerTry} kez denendi. Çıkılıyor...`));
-        process.exit(1);
+      if (workerTry > 3) {
+        console.error(c.red(`❌ [${workerId}] Çeviri işlemi başarısız oldu veya Çevirilicek dosya kalmadı. Çıkılıyor...`));
       }
-      console.log(c.yellow(`⏸️ [${workerId}] İşlenecek dosya bulunamadı veya hata oluştu, bekleniyor...`));
       await delay(5000); 
     }
   }
